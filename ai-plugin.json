@@ -1,0 +1,38 @@
+{
+    "name": "Jyotish Astrology Plugin",
+    "version": "1.0.0",
+    "description": "A plugin for Jyotish astrology analysis and text retrieval.",
+    "main": "main.py",
+    "api": {
+        "url": "https://astrovedicboy.ramiromora1.repl.co/.well-known/openapi.yaml",
+        "authentication": {
+          "type": "none"
+        }
+      },
+    "endpoints": [
+      {
+        "name": "ask_question",
+        "route": "/ask_question",
+        "method": "POST",
+        "input": {
+          "type": "object",
+          "properties": {
+            "birth_date": { "type": "string" },
+            "birth_time": { "type": "string" },
+            "birth_city": { "type": "string" },
+            "question": { "type": "string" }
+          },
+          "required": ["birth_date", "birth_time", "birth_city", "question"]
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "question": { "type": "string" },
+            "answer": { "type": "string" }
+          },
+          "required": ["question", "answer"]
+        }
+      }
+    ]
+  }
+  
