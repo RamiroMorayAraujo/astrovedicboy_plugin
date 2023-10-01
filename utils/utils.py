@@ -27,6 +27,8 @@ except ValueError:
     print("Warning: Google Maps API Key not found. Some features may not work.")
     gmaps = None
 
+def get_remote_address():
+    return request.remote_addr
 
 def read_and_tokenize_csv():
     # Initialize an empty list to store tokenized texts
@@ -106,6 +108,8 @@ def generate_astro_analysis(chart_details, tokenized_texts):
     complete_analysis = " ".join(analysis_parts)
     
     return complete_analysis
+
+
 
 def get_time_zone(latitude, longitude):
     obj = TimezoneFinder()
@@ -212,8 +216,8 @@ def delete_csv_row(filename, text_id):
 def get_access_token():
     token_url = "https://api.prokerala.com/token"
     payload = {
-        "client_id": PROKERALA_CLIENT_ID,
-        "client_secret": PROKERALA_CLIENT_SECRET,
+        "client_id": os.environ.get('PROKERALA_CLIENT_ID'),
+        "client_secret": os.environ.get('PROKERALA_CLIENT_SECRET'),
         "grant_type": "client_credentials",
         "scope": "public"
     }

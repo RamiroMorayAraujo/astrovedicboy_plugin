@@ -22,6 +22,8 @@ import os  # For environment variables
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env')
 import re  # Regular expressions library
+from utils import get_remote_address, read_and_tokenize_csv, get_access_token, initial_filtering, get_coordinates, get_rasi_chart
+from flask_limiter import Limiter
 csv_data = []
 
 
@@ -31,11 +33,15 @@ GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TIMEZONE_API_KEY = os.getenv("TIMEZONE_API_KEY ")
 
+# You can use Python's built-in logging module to log errors and other important events.
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
 # Initialize Flask app
 app = Flask(__name__)
 
-# You can use Python's built-in logging module to log errors and other important events.
-logging.basicConfig(filename='app.log', level=logging.INFO)
+
+
+limiter = Limiter(app, key_func=get_remote_address)
 
 #error handling
 @app.errorhandler(404)
@@ -63,6 +69,10 @@ def internal_error(error):
     logging.error('Server Error: %s', error)
     return 'Internal Server Error', 500
 
+@limiter.limit('5 per minute')
+@app.route('/some_route', methods=['GET'])
+def some_route():
+    return 'This is some route'
 
 
 # Initialize an empty list to store tokenized texts

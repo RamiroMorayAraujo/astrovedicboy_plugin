@@ -9,6 +9,7 @@ import json
 import csv  # Already included for CSV handling
 import os  # For environment variables
 from dotenv import load_dotenv
+from utils import read_csv, write_csv, delete_csv_row, update_csv_row, datetime
 load_dotenv(dotenv_path='.env')
 csv_data = []
 
