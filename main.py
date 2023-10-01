@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask import send_from_directory
 from datetime import datetime
 from timezonefinder import TimezoneFinder
+from requests.exceptions import Timeout, RequestException
 import pytz
 # import sqlite3  # Commented out as we're transitioning to CSV
 import requests
@@ -39,6 +40,14 @@ def not_found_error(error):
 @app.errorhandler(500)
 def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
+
+@app.errorhandler(Timeout)
+def handle_timeout_error(error):
+    return jsonify({'error': 'API request timed out'}), 408
+
+@app.errorhandler(RequestException)
+def handle_request_error(error):
+    return jsonify({'error': 'API request failed'}), 500
 
 
 # Initialize an empty list to store tokenized texts
@@ -82,7 +91,7 @@ if __name__ == '__main__':
     else:
         print("Failed to generate access token.")
         
-   # app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)
 
 
     sample_rasi_chart = "Aries"  # Replace with a sample Rasi chart data

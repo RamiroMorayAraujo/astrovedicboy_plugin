@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask import send_from_directory
 from datetime import datetime
+from requests.exceptions import Timeout, RequestException
 from timezonefinder import TimezoneFinder
 import pytz
 # import sqlite3  # Commented out as we're transitioning to CSV
@@ -30,15 +31,7 @@ def serve_ai_plugin():
 def serve_openapi_yaml():
   return send_from_directory('.', 'openapi.yaml', mimetype='text/yaml')
 
-@app.route('/.well-known/ai-plugin.json')
-def serve_ai_plugin():
-  return send_from_directory('.',
-                             'ai-plugin.json',
-                             mimetype='application/json')
 
-@app.route('/.well-known/openapi.yaml')
-def serve_openapi_yaml():
-  return send_from_directory('.', 'openapi.yaml', mimetype='text/yaml')
 
 @app.route('/')
 def hello_world():
