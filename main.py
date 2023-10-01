@@ -31,6 +31,16 @@ TIMEZONE_API_KEY = os.getenv("TIMEZONE_API_KEY ")
 # Initialize Flask app
 app = Flask(__name__)
 
+#error handling
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500
+
+
 # Initialize an empty list to store tokenized texts
 tokenized_texts = []
 
@@ -49,17 +59,6 @@ if os.environ.get('GOOGLE_MAPS_API_KEY'):
 else:
     gmaps = None
     print("Warning: Google Maps API Key not found. Some features may not work.")
-
-
-
-# -----------------------
-# Utility Functions
-# -----------------------
-
-
-# -----------------------
-# Flask Routes
-# -----------------------
 
 
 
