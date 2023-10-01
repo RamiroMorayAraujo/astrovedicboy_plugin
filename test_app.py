@@ -1,5 +1,6 @@
 import unittest
 from main import get_texts  # Replace 'main' with the name of your main Python file if it's different
+from main import get_access_token 
 from unittest.mock import Mock, patch
 from flask import Flask, jsonify
 
@@ -41,6 +42,12 @@ class TestApp(unittest.TestCase):
             self.assertEqual(result.get_json(), [{'id': 1, 'title': 'Title 1'}, {'id': 2, 'title': 'Title 2'}])
             print("Result:", result.get_json())
 
+    @patch('main.get_access_token')
+    def test_get_access_token(self, mock_get_access_token):
+        with app.app_context():
+            mock_get_access_token.return_value = "some_access_token"
+            result = get_access_token()
+            self.assertEqual(result, "some_access_token")
 
 
 if __name__ == '__main__':
