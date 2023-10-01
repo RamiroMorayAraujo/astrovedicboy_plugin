@@ -6,7 +6,9 @@ from flask import send_from_directory
 from datetime import datetime
 from timezonefinder import TimezoneFinder
 from requests.exceptions import Timeout, RequestException
+from flask_limiter import Limiter
 import pytz
+import logging
 # import sqlite3  # Commented out as we're transitioning to CSV
 import requests
 import json
@@ -32,10 +34,13 @@ TIMEZONE_API_KEY = os.getenv("TIMEZONE_API_KEY ")
 # Initialize Flask app
 app = Flask(__name__)
 
+# You can use Python's built-in logging module to log errors and other important events.
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
 #error handling
 @app.errorhandler(404)
 def not_found_error(error):
-    return jsonify({'error': 'Not found'}), 404
+    return jsonify({'error': 'Resource not found'}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -48,6 +53,16 @@ def handle_timeout_error(error):
 @app.errorhandler(RequestException)
 def handle_request_error(error):
     return jsonify({'error': 'API request failed'}), 500
+
+app.errorhandler(400)
+def bad_request_error(error):
+    return jsonify({'error': 'Bad Request'}), 400
+
+@app.errorhandler(500)
+def internal_error(error):
+    logging.error('Server Error: %s', error)
+    return 'Internal Server Error', 500
+
 
 
 # Initialize an empty list to store tokenized texts
